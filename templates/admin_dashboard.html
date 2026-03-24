@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - CRM</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header class="topbar">
+        <div>
+            <h2>Admin Dashboard</h2>
+            <p class="topbar-sub">Manage enquiries, notifications, and analytics</p>
+        </div>
+        <a href="{{ url_for('admin_logout') }}" class="btn-secondary">Logout</a>
+    </header>
+    <main class="page-wrap">
+        <section class="stats-grid">
+            <div class="stat-card"><h3>Total Enquiries</h3><p>{{ total_enquiries }}</p></div>
+            <div class="stat-card"><h3>New Enquiries</h3><p>{{ new_count }}</p></div>
+            <div class="stat-card"><h3>Services Covered</h3><p>4</p></div>
+        </section>
+        <section class="grid-2">
+            <div class="card">
+                <h3>Service Demand</h3>
+                <ul class="service-list">
+                    {% for service, count in service_count.items() %}
+                    <li><span>{{ service }}</span><strong>{{ count }}</strong></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            <div class="card">
+                <h3>Automation Preview</h3>
+                <p class="muted">The admin side handles automatic email and WhatsApp follow-up previews based on customer enquiries.</p>
+                <div class="preview-box">
+                    <strong>Email Automation:</strong>
+                    <p>“Thank you for your enquiry. Our team will contact you shortly with complete details.”</p>
+                </div>
+                <div class="preview-box">
+                    <strong>WhatsApp Automation:</strong>
+                    <p>“Hi, thank you for contacting us. We have received your enquiry and will connect with you soon.”</p>
+                </div>
+            </div>
+        </section>
+        <section class="card">
+            <h3>Customer Enquiry List</h3>
+            {% if enquiries %}
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>ID</th><th>Name</th><th>Email</th><th>Phone</th><th>Service</th><th>Message</th><th>Date</th><th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for enquiry in enquiries %}
+                        <tr>
+                            <td>{{ enquiry.id }}</td>
+                            <td>{{ enquiry.name }}</td>
+                            <td>{{ enquiry.email }}</td>
+                            <td>{{ enquiry.phone }}</td>
+                            <td>{{ enquiry.service }}</td>
+                            <td>{{ enquiry.message }}</td>
+                            <td>{{ enquiry.date }}</td>
+                            <td>
+                                <a href="{{ enquiry.admin_wa_url }}" target="_blank" class="btn-primary" style="background: #25d366; padding: 8px 12px; font-size: 12px; white-space: nowrap; display: inline-block;">
+                                    WhatsApp
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <p>No enquiries available yet.</p>
+            {% endif %}
+        </section>
+    </main>
+</body>
+</html>

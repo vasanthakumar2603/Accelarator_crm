@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Login - CRM Portal</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="auth-body">
+    <div class="auth-card">
+        <h1>Customer Login</h1>
+        <p class="subtitle">AI Powered CRM Portal</p>
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="alert error">{{ messages[0] }}</div>
+          {% endif %}
+        {% endwith %}
+        <form method="POST" action="{{ url_for('customer_login_post') }}">
+            <label>Email</label>
+            <input type="email" name="email" placeholder="Enter your email" required>
+            <label>Password</label>
+            <input type="password" name="password" placeholder="Enter your password" required>
+            <button type="submit" class="btn-primary">Login</button>
+        </form>
+        <div class="demo-box"><strong>Demo Customer Login</strong><br>customer@demo.com / 1234</div>
+        <p class="link-text"><a href="{{ url_for('admin_login') }}">Go to Admin Login</a></p>
+    </div>
+</body>
+</html>

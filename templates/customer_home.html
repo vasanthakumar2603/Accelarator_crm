@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Portal - CRM</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <header class="topbar">
+        <div>
+            <h2>Customer CRM Portal</h2>
+            <p class="topbar-sub">Welcome, {{ customer_email }}</p>
+        </div>
+        <a href="{{ url_for('customer_logout') }}" class="btn-secondary">Logout</a>
+    </header>
+    <main class="page-wrap">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <div class="alert error full">{{ messages[0] }}</div>
+          {% endif %}
+        {% endwith %}
+        <section class="grid-2">
+            <div class="card">
+                <h3>Customer Enquiry Form</h3>
+                <form method="POST" action="{{ url_for('submit_enquiry') }}">
+                    <label>Full Name</label>
+                    <input type="text" name="name" placeholder="Enter full name" required>
+                    <label>Email</label>
+                    <input type="email" name="email" value="{{ customer_email }}" required>
+                    <label>Phone Number</label>
+                    <input type="text" name="phone" placeholder="Enter phone number" required>
+                    <label>Select Service</label>
+                    <select name="service" required>
+                        <option value="">Choose service</option>
+                        {% for service in services %}
+                        <option value="{{ service }}">{{ service }}</option>
+                        {% endfor %}
+                    </select>
+                    <label>Enquiry Message</label>
+                    <textarea name="message" rows="5" placeholder="Enter your enquiry" required></textarea>
+                    <button type="submit" class="btn-primary">Submit Enquiry</button>
+                </form>
+            </div>
+            <div class="card">
+                <h3>Customer Chatbot</h3>
+                <p class="muted">Ask about pricing, demo, services, or support.</p>
+                <div class="chat-box" id="chatBox">
+                    <div class="chat-message bot">Hello! How can I help you today?</div>
+                </div>
+                <div class="chat-controls">
+                    <input type="text" id="chatInput" placeholder="Type your question here">
+                    <button type="button" class="btn-primary" onclick="sendChat()">Send</button>
+                </div>
+            </div>
+        </section>
+    </main>
+    <script>
+        async function sendChat() {
+            const input = document.getElementById("chatInput");
+            const chatBox = document.getElementById("chatBox");
+            const message = input.value.trim();
+            if (!message) return;
+            const userDiv = document.createElement("div");
+            userDiv.className = "chat-message user";
+            userDiv.textContent = message;
+            chatBox.appendChild(userDiv);
+            input.value = "";
+            const response = await fetch("/chatbot", {
+                method: "POST",
+                headers: {"Content-Type": "application/x-www-form-urlencoded"},
+                body: "message=" + encodeURIComponent(message)
+            });
+            const data = await response.json();
+            const botDiv = document.createElement("div");
+            botDiv.className = "chat-message bot";
+            botDiv.textContent = data.reply;
+            chatBox.appendChild(botDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+    </script>
+</body>
+</html>

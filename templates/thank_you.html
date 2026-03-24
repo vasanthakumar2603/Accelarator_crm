@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thank You - CRM</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body>
+    <main class="page-wrap single">
+        <div class="card">
+            {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                {% for message in messages %}
+                  <div class="alert {% if 'issue' in message %}error{% else %}success{% endif %} full">{{ message }}</div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+            <h2>Enquiry Received!</h2>
+            <p>Your enquiry has been submitted successfully. Please check your inbox for course details.</p>
+            <div class="preview-box">
+                <h3>Email Notification Preview</h3>
+                <p>{{ enquiry.email_notification }}</p>
+            </div>
+            <div class="preview-box">
+                <h3>WhatsApp Message Preview</h3>
+                <p>{{ enquiry.whatsapp_message }}</p>
+            </div>
+            <div style="margin-top: 20px; display: flex; gap: 15px; flex-direction: column;">
+                <a href="{{ enquiry.customer_wa_url }}" target="_blank" class="btn-primary" style="background: linear-gradient(135deg, #25D366, #128C7E); text-align: center; width: 100%;">
+                    💬 Get Details on WhatsApp
+                </a>
+                <a href="{{ url_for('customer_home') }}" class="btn-secondary" style="text-align: center;">Back to Customer Home</a>
+            </div>
+        </div>
+    </main>
+</body>
+</html>

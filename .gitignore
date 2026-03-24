@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+venv/
+env/
+
+# Environment Variables (CRITICAL: Do not push these!)
+.env
+
+# Vercel
+.vercel/
+
+# Data (Avoid pushing user data to public repos)
+data/enquiries.json
