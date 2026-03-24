@@ -86,17 +86,25 @@ COURSE_DETAILS = {
 }
 
 def load_enquiries():
-    if not os.path.exists(DATA_FILE):
-        return []
-    with open(DATA_FILE, "r", encoding="utf-8") as f:
-        try:
-            return json.load(f)
-        except json.JSONDecodeError:
+    try:
+        if not os.path.exists(DATA_FILE):
             return []
+        with open(DATA_FILE, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except Exception as e:
+        print(f"Error loading enquiries: {e}")
+        return []
 
 def save_enquiries(enquiries):
-    with open(DATA_FILE, "w", encoding="utf-8") as f:
-        json.dump(enquiries, f, indent=4)
+    try:
+        # Create data directory if it doesn't exist
+        os.makedirs(os.path.dirname(DATA_FILE), exist_ok=True)
+        with open(DATA_FILE, "w", encoding="utf-8") as f:
+            json.dump(enquiries, f, indent=4)
+        return True
+    except Exception as e:
+        print(f"Error saving enquiries (likely Vercel read-only): {e}")
+        return False
 
 def chatbot_response(message):
     msg = message.lower()
@@ -278,7 +286,8 @@ def submit_enquiry():
     
     # Generate Professional WhatsApp Message for the Admin to send to Customer
     course = COURSE_DETAILS.get(service, {})
-    syllabus_summary = ", ".join(course.get('syllabus', [])[:3]) + "..."
+    syllabus_list = course.get('syllabus', [])
+    syllabus_summary = ", ".join(syllabus_list[:3]) + "..." if syllabus_list else "Course details and more"
     wa_text = (
         f"Hello {name}! 🚀\n\n"
         f"Thank you for your interest in our *{service}* course at AcceleratorX.\n\n"
